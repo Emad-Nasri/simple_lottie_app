@@ -16,7 +16,7 @@ class _HomePageState extends State<HomePage>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Durations.extralong4,
+      duration: const Duration(seconds: 3),
     );
   }
 
@@ -32,11 +32,11 @@ class _HomePageState extends State<HomePage>
       body: _buildUI(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          var ticker = _controller.forward();
-          ticker.whenComplete(() {
-            _controller.reset();
-          });
+          if (!_controller.isAnimating) {
+            _controller.forward(from: 0);
+          }
         },
+
         child: Icon(Icons.play_arrow),
       ),
     );
@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage>
       children: [
         Center(
           child: Lottie.asset(
-            'assets/animations/blue loading.json',
+            'assets/animations/blue_loading.lottie',
             repeat: true,
             //reverse: true,
             width: 250,
@@ -55,12 +55,15 @@ class _HomePageState extends State<HomePage>
           ),
         ),
         Lottie.asset(
-          'assets/animations/Confetti (1).json',
+          'assets/animations/Confetti1.lottie',
           controller: _controller,
           width: MediaQuery.sizeOf(context).height,
           height: MediaQuery.sizeOf(context).width,
           fit: BoxFit.cover,
           repeat: false,
+          onLoaded: (composition) {
+            _controller.duration = composition.duration;
+          },
         ),
       ],
     );
